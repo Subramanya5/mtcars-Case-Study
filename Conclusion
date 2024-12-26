@@ -1,0 +1,43 @@
+# Outcome Summary:
+
+# Data Summary:
+The dataset (mtcars) was cleaned, with missing values removed and categorical variables appropriately encoded as factors.
+Summary statistics revealed a diverse range of vehicle characteristics, with mpg (miles per gallon) ranging from 10.4 to 33.9.
+Correlation Analysis:
+
+Significant correlations were observed:
+Negative correlation between mpg and weight (wt), displacement (disp), and horsepower (hp), suggesting heavier and more powerful cars tend to have lower fuel efficiency.
+Positive correlation between mpg and variables like drat (rear axle ratio) and vs (engine shape).
+Visualizations:
+
+Scatter Plot: Showed a clear inverse relationship between wt and mpg.
+Box Plot: Cars with fewer cylinders generally had higher mpg.
+Histogram: Indicated a normal-like distribution of mpg.
+Heatmap: Highlighted the strength and direction of variable correlations.
+
+
+# Regression Models:
+Linear Regression:
+Achieved an Adjusted R-squared of 0.8165, indicating a good fit.
+Significant predictors of mpg included wt (p ≈ 0.05), showing that weight has a notable negative impact on fuel efficiency.
+
+Logistic Regression:
+Faced convergence issues, indicating potential multicollinearity or separation problems.
+Despite this, the binary classification of high vs. low mpg provided insights into variable importance.
+Decision Trees & Random Forest:
+
+Decision Tree:
+Identified a threshold (mpg < 20.35) that clearly segregated vehicles into high or low mpg categories.
+
+Random Forest:
+Achieved a low out-of-bag (OOB) error rate of 3.12%, indicating high classification accuracy.
+
+Support Vector Machines (SVM):
+The SVM model classified mpg with a moderate number of support vectors (18), highlighting its effectiveness in handling the dataset.
+
+Naive Bayes:
+Demonstrated distinct conditional probabilities for key predictors like wt, hp, and cyl, reinforcing their importance in distinguishing between high and low mpg.
+
+Weight (wt) is the most influential predictor, with heavier cars consistently achieving lower mpg.
+Cars with fewer cylinders are generally more fuel-efficient.
+Machine learning models like Random Forest and SVM achieved high accuracy, while simpler models provided interpretable results.
