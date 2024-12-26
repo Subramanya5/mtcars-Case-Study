@@ -1,0 +1,152 @@
+# Load necessary libraries
+library(tidyverse)      # Data manipulation and visualization
+library(caret)          # Machine learning utilities
+library(e1071)          # Support Vector Machines
+library(randomForest)   # Random Forests
+library(rpart)          # Decision Trees
+library(cluster)        # Clustering
+library(forecast)       # Time series analysis
+library(MASS)           # Naive Bayes
+library(class)          # K-Nearest Neighbors
+
+# Load dataset
+data(mtcars)
+df <- mtcars
+
+# View the first few rows of the dataset
+head(df)
+
+# Data Cleaning
+df <- na.omit(df)            # Remove rows with missing values
+df$cyl <- as.factor(df$cyl)  # Convert categorical variables to factors
+
+# Summary of the dataset
+summary(df)
+
+# Correlation Table
+correlation_matrix <- cor(df[sapply(df, is.numeric)])
+print(correlation_matrix)
+
+# Data Visualization
+# Pair plot
+pairs(df)
+
+# Load ggplot2 library for visualization
+library(ggplot2)
+# Scatter Plot: Relationship between Weight (wt) and Miles Per Gallon (mpg)
+plot(df$wt, df$mpg, 
+     main = "Scatter Plot of Weight vs. Miles Per Gallon", 
+     xlab = "Weight of the Car", 
+     ylab = "Miles Per Gallon", 
+     col = "blue", pch = 19)
+# Box Plot: Distribution of Miles Per Gallon by Number of Cylinders
+boxplot(mpg ~ cyl, data = df, 
+        main = "Boxplot of MPG by Number of Cylinders", 
+        xlab = "Number of Cylinders", 
+        ylab = "Miles Per Gallon", 
+        col = c("red", "green", "blue"))
+# Histogram: Distribution of Miles Per Gallon
+hist(df$mpg, 
+     main = "Histogram of Miles Per Gallon", 
+     xlab = "Miles Per Gallon", 
+     col = "lightblue", 
+     border = "black", 
+     breaks = 10)
+
+#  Correlation Heatmap
+library(corrplot)
+corrplot(correlation_matrix, method = "color", 
+         main = "Correlation Heatmap", 
+         tl.col = "black", tl.srt = 45)
+
+
+# Number of Cars by Cylinder Count
+cyl_count <- table(df$cyl)
+barplot(cyl_count, 
+        main = "Number of Cars by Cylinder Count", 
+        xlab = "Number of Cylinders", 
+        ylab = "Count", 
+        col = "purple", 
+        border = "black")
+
+#AirPassengers Data
+plot(ts_data, 
+     main = "Time Series of Air Passengers", 
+     xlab = "Year", 
+     ylab = "Number of Passengers", 
+     col = "darkgreen", 
+     type = "o")
+
+# Linear Regression
+linear_model <- lm(mpg ~ ., data = df)
+summary(linear_model)
+
+# Logistic Regression (binary outcome example)
+df$high_mpg <- ifelse(df$mpg > 20, 1, 0)     # Create binary target variable
+logistic_model <- glm(high_mpg ~ ., data = df, family = binomial)
+summary(logistic_model)
+
+# Decision Trees
+decision_tree <- rpart(high_mpg ~ ., data = df, method = "class")
+print(decision_tree)
+plot(decision_tree)
+text(decision_tree)
+
+# Random Forest
+# Convert the response variable to a factor
+df$high_mpg <- as.factor(df$high_mpg)
+
+random_forest <- randomForest(high_mpg ~ ., data = df, ntree = 100)
+print(random_forest)
+
+# Support Vector Machines
+svm_model <- svm(high_mpg ~ ., data = df)
+summary(svm_model)
+
+# Naive Bayes
+naive_bayes_model <- naiveBayes(high_mpg ~ ., data = df)
+print(naive_bayes_model)
+
+# K-Nearest Neighbors (KNN)
+train_idx <- createDataPartition(df$high_mpg, p = 0.7, list = FALSE)
+train_data <- df[train_idx, ]
+test_data <- df[-train_idx, ]
+knn_pred <- knn(train_data, test_data, cl = train_data$high_mpg, k = 3)
+print(knn_pred)
+
+# K-Means Clustering
+kmeans_data <- df[sapply(df, is.numeric)]    # Select only numeric columns
+kmeans_model <- kmeans(kmeans_data, centers = 3)
+print(kmeans_model)
+
+# Hierarchical Clustering
+hc <- hclust(dist(kmeans_data))
+plot(hc)
+
+# Train-Test Split and Evaluation Metrics
+set.seed(123)
+train_control <- trainControl(method = "cv", number = 10)  # Cross-validation
+logistic_cv <- train(high_mpg ~ ., data = df, method = "glm", family = "binomial",
+                     trControl = train_control)
+print(logistic_cv)
+
+# Evaluation: Accuracy, Precision, Recall, F1-Score
+predicted <- predict(logistic_model, test_data, type = "response")
+threshold <- 0.5
+pred_class <- ifelse(predicted > threshold, 1, 0)
+conf_matrix <- table(pred_class, test_data$high_mpg)
+accuracy <- sum(diag(conf_matrix)) / sum(conf_matrix)
+precision <- conf_matrix[2, 2] / sum(conf_matrix[2, ])
+recall <- conf_matrix[2, 2] / sum(conf_matrix[, 2])
+f1_score <- 2 * ((precision * recall) / (precision + recall))
+cat("Accuracy:", accuracy, "Precision:", precision, "Recall:", recall, "F1 Score:", f1_score)
+
+# Time Series Analysis
+data(AirPassengers)
+ts_data <- AirPassengers
+arima_model <- auto.arima(ts_data)
+summary(arima_model)
+
+# Forecast using ARIMA
+forecasted <- forecast(arima_model, h = 12)
+plot(forecasted)
